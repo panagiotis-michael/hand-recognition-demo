@@ -6,21 +6,19 @@ import PySimpleGUI as g
 g.change_look_and_feel('Dark')
 
 
-bt_color = 'black on yellow'
-bt_font = 'Inter'
-bt_size = (20,2)
+btn_color = 'black on yellow'
+btn_font = 'Inter'
+btn_size = (20,2)
+
+wind_size = (800, 600)
+
+layout = [[g.Button('Turn On Camera', button_color = btn_color, size = btn_size , font = btn_font)],
+            [g.Button('Detect Hand', button_color = btn_color, size = btn_size, font = btn_font)],
+            [g.Button('Take Picture', button_color = btn_color, size = btn_size, font = btn_font)],
+            [g.Button('Predict Visual', button_color = btn_color, size = btn_size, font = btn_font)]]
 
 
-layout = [[g.Button('Turn On Camera', button_color = bt_color, size = bt_size , font = bt_font)],
-            [g.Button('Detect Hand', button_color = bt_color, size = bt_size, font = bt_font)],
-            [g.Button('Take Picture', button_color = bt_color, size = bt_size, font = bt_font)],
-            [g.Button('Predict Visual', button_color = bt_color, size = bt_size, font = bt_font)]]
-
-
-w , h = g.Window.get_screen_size()
-
-
-window = g.Window("Hand Recognition Demo", layout, size = (w // 2, h // 2))
+window = g.Window("Hand Recognition Demo", layout, size = wind_size)
 
 
 while True:
