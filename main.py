@@ -12,10 +12,12 @@ btn_size = (20,2)
 
 wind_size = (800, 600)
 
-layout = [[g.Button('Turn On Camera', button_color = btn_color, size = btn_size , font = btn_font)],
+col1 = [[g.Button('Turn On Camera', button_color = btn_color, size = btn_size , font = btn_font)],
             [g.Button('Detect Hand', button_color = btn_color, size = btn_size, font = btn_font)],
             [g.Button('Take Picture', button_color = btn_color, size = btn_size, font = btn_font)],
             [g.Button('Predict Visual', button_color = btn_color, size = btn_size, font = btn_font)]]
+
+layout = [[g.Column(col1)]]
 
 
 window = g.Window("Hand Recognition Demo", layout, size = wind_size)
