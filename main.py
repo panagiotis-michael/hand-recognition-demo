@@ -9,11 +9,8 @@ g.change_look_and_feel("Dark")
 
 
 btn_color = "black on yellow"
-btn_font = "Inter"
+frame_font = text_font = btn_font = "Inter"
 btn_size = (25, 2)
-
-
-frame_font = "Inter"
 
 
 col1 = [
@@ -78,7 +75,7 @@ layout = [
     [
         g.Column(col1, element_justification="c"),
         g.Column(col2, element_justification="c"),
-    ]
+    ],
 ]
 
 
