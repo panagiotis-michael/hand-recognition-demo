@@ -1,26 +1,30 @@
 # This is a Hand Recognition Demo
 
 import PySimpleGUI as g
-
+import cv2
 
 g.change_look_and_feel('Dark')
 
 
 btn_color = 'black on yellow'
 btn_font = 'Inter'
-btn_size = (20,2)
+btn_size = (25,2)
 
-wind_size = (800, 600)
-
-col1 = [[g.Button('Turn On Camera', button_color = btn_color, size = btn_size , font = btn_font)],
-            [g.Button('Detect Hand', button_color = btn_color, size = btn_size, font = btn_font)],
+col1 = [[g.Frame('Choices',[
+            [g.Button('Turn On Camera ON/OFF', button_color = btn_color, size = btn_size , font = btn_font)],
+            [g.Button('Detect Hand ON/OFF', button_color = btn_color, size = btn_size, font = btn_font)],
             [g.Button('Take Picture', button_color = btn_color, size = btn_size, font = btn_font)],
-            [g.Button('Predict Visual', button_color = btn_color, size = btn_size, font = btn_font)]]
+            [g.Button('Predict Visual', button_color = btn_color, size = btn_size, font = btn_font)]
+                        ])]
+        ]
 
-layout = [[g.Column(col1)]]
+col2 = []
 
 
-window = g.Window("Hand Recognition Demo", layout, size = wind_size)
+layout = [[g.Column(col1, element_justification = 'c')]]
+
+
+window = g.Window("Hand Recognition Demo", layout)
 
 
 while True:
