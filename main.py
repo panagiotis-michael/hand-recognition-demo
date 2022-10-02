@@ -6,6 +6,8 @@ import cv2
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+from PIL import ImageTk
+from PIL import Image
 
 
 # model = tf.keras.models.load_model(
@@ -34,52 +36,12 @@ text_font = frame_font = text_font = btn_font = "Inter"
 btn_size = (25, 2)
 
 
-col1 = [
-    [
-        g.Frame(
-            "Choices",
-            [
-                [
-                    g.Button(
-                        "Open Camera",
-                        button_color=btn_color,
-                        size=btn_size,
-                        font=btn_font,
-                        key="open",
-                    )
-                ],
-                [
-                    g.Button(
-                        "Detect Hand",
-                        button_color=btn_color,
-                        size=btn_size,
-                        font=btn_font,
-                        key="detect",
-                    )
-                ],
-                [
-                    g.Button(
-                        "Close Camera",
-                        button_color=btn_color,
-                        size=btn_size,
-                        font=btn_font,
-                        key="close",
-                    )
-                ],
-            ],
-            font=frame_font,
-            border_width=3,
-        )
-    ]
-]
-
-
-col2 = [
+col = [
     [
         g.Frame(
             "Camera",
-            [[g.Image(filename="", key="image")]],
-            size=(900, 600),
+            [[g.Image(filename="", key="camera")]],
+            # size=(900, 600),
             font=frame_font,
             border_width=3,
         )
@@ -91,23 +53,39 @@ col2 = [
             font=text_font,
             text_color="#FFFFFF",
             justification="c",
-            key="pred",
+            key="text",
         )
     ],
     [
         g.Button(
-            "YES", button_color=btn_color2, size=btn_size, font=btn_font, key="yes"
+            "Detect Hand",
+            button_color=btn_color,
+            size=btn_size,
+            font=btn_font,
+            key="detect",
         ),
-        g.Button("NO", button_color=btn_color3, size=btn_size, font=btn_font, key="no"),
+        g.Button(
+            "YES",
+            button_color=btn_color2,
+            size=btn_size,
+            font=btn_font,
+            key="yes",
+            disabled=True,
+        ),
+        g.Button(
+            "NO",
+            button_color=btn_color3,
+            size=btn_size,
+            font=btn_font,
+            key="no",
+            disabled=True,
+        ),
     ],
 ]
 
 
 layout = [
-    [
-        g.Column(col1, element_justification="c"),
-        g.Column(col2, element_justification="c"),
-    ],
+    [g.Column(col, element_justification="c")],
 ]
 
 
@@ -117,23 +95,22 @@ window = g.Window(
     keep_on_top=True,
 )
 
+cap = cv2.VideoCapture(0)
 
 while True:
-    event, values = window.read()
+    event, values = window.read(timeout=30)
 
-    if event == "Ex1" or event == g.WIN_CLOSED:
+    if event == g.WIN_CLOSED:
         break
 
-    if event == "open":
-        cap = cv2.VideoCapture(0)
-        while True:
-            ret, frame = cap.read()
-            imgbytes = cv2.imencode(".png", frame)[1].tobytes()
-            window["image"].update(data=imgbytes)
+    ret, frame = cap.read()
+    imgbytes = ImageTk.PhotoImage(
+        Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+    )
+    window["camera"].update(data=imgbytes)
 
-    if event == "close":
-        cap.release()
-        break
+    if event == "detect":
+        window["detect"].update(disabled=True)
 
-
+cap.release()
 window.close()
