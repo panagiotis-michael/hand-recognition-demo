@@ -3,13 +3,23 @@
 
 import PySimpleGUI as g
 import cv2
+import pandas as pd
+
+# import tensorflow as tf
 
 
-g.change_look_and_feel("Dark")
+# model = tf.keras.models.load_model(
+# "C:\\Users\\bignu\\OneDrive\\Desktop\\Hand Recognition Demo\\hand-recognition-demo\\model"
+# )
+
+
+g.change_look_and_feel("Dark2")
 
 
 btn_color = "black on yellow"
-frame_font = text_font = btn_font = "Inter"
+btn_color2 = "green on yellow"
+btn_color3 = "red on yellow"
+text_font = frame_font = text_font = btn_font = "Inter"
 btn_size = (25, 2)
 
 
@@ -20,7 +30,7 @@ col1 = [
             [
                 [
                     g.Button(
-                        "Turn On Camera ON/OFF",
+                        "Open Camera",
                         button_color=btn_color,
                         size=btn_size,
                         font=btn_font,
@@ -28,23 +38,7 @@ col1 = [
                 ],
                 [
                     g.Button(
-                        "Detect Hand ON/OFF",
-                        button_color=btn_color,
-                        size=btn_size,
-                        font=btn_font,
-                    )
-                ],
-                [
-                    g.Button(
-                        "Take Picture",
-                        button_color=btn_color,
-                        size=btn_size,
-                        font=btn_font,
-                    )
-                ],
-                [
-                    g.Button(
-                        "Predict Visual",
+                        "Detect Hand",
                         button_color=btn_color,
                         size=btn_size,
                         font=btn_font,
@@ -63,11 +57,34 @@ col2 = [
         g.Frame(
             "Camera",
             [[g.Image(filename="", key="image")]],
-            size=(800, 600),
+            size=(900, 600),
             font=frame_font,
             border_width=3,
         )
-    ]
+    ],
+    [
+        g.Text(
+            "Prediction: ",
+            size=(60, 2),
+            font=text_font,
+            text_color="#FFFFFF",
+            justification="c",
+        )
+    ],
+    [
+        g.Button(
+            "YES",
+            button_color=btn_color2,
+            size=btn_size,
+            font=btn_font,
+        ),
+        g.Button(
+            "NO",
+            button_color=btn_color3,
+            size=btn_size,
+            font=btn_font,
+        ),
+    ],
 ]
 
 
@@ -79,7 +96,7 @@ layout = [
 ]
 
 
-window = g.Window("Hand Recognition Demo", layout)
+window = g.Window("Hand Recognition Demo", layout, keep_on_top=True)
 
 
 while True:
