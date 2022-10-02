@@ -15,7 +15,7 @@ from PIL import Image
 # )
 
 
-def GetPrediction(model, img, img_width, img_height):
+def GetPrediction(model, img, img_width=64, img_height=64):
     img = cv2.resize(img, (img_width, img_height))
     img = tf.image.rgb_to_grayscale(img)
     img_array = img.img_to_array(img)
