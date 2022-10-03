@@ -29,7 +29,7 @@ def GetPrediction(model, img, img_width=64, img_height=64):
 
 
 def TranslatePrediction(prediction):
-    if prediction == 0:  # Hold still option
+    if prediction == 0:
         return "Open Palm"
     if prediction == 1:
         return "Down"
