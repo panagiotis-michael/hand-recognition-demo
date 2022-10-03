@@ -5,7 +5,7 @@ import PySimpleGUI as g
 import cv2
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+#import tensorflow as tf
 from PIL import ImageTk
 from PIL import Image
 
@@ -111,6 +111,23 @@ while True:
 
     if event == "detect":
         window["detect"].update(disabled=True)
+        window["yes"].update(disabled=False)
+        window["no"].update(disabled=False)
+        prediction_values = GetPrediction(model,frame)
+        window["text"].update(f"Prediction: {prediction_values[0]} with confidence {prediction_values[1]}%.")
 
+    if event == "yes":
+        window["detect"].update(disabled=True)
+        window["yes"].update(disabled=True)
+        window["no"].update(disabled=True)
+        window["text"].update("Prediction:")
+
+    if event == "no":
+        window["detect"].update(disabled=True)
+        window["yes"].update(disabled=True)
+        window["no"].update(disabled=True)
+        window["text"].update("Prediction:")
+    
+    
 cap.release()
 window.close()
