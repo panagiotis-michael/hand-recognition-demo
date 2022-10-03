@@ -150,7 +150,7 @@ while True:
             f"{image_counter}.png",
             prediction_values[0],
             prediction_values[1],
-            1,
+            1
         ]
         image_counter += 1
 
@@ -163,7 +163,7 @@ while True:
             f"{image_counter}.png",
             prediction_values[0],
             prediction_values[1],
-            0,
+            0
         ]
         image_counter += 1
 
