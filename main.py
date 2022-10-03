@@ -11,11 +11,10 @@ from PIL import Image
 
 
 model = tf.keras.models.load_model("C:\\model")
+
 img_path = "C:\\pictures"
 result_path = "C:\\test_results"
-
-
-df_results = pd.DataFrame(columns=["Image", "Prediction", "Confidence", "Correct"])
+image_counter_path = "C:\\image_counter.txt"
 
 
 def GetPrediction(model, img, img_width=64, img_height=64):
@@ -80,7 +79,7 @@ col = [
             key="detect",
         ),
         g.Button(
-            "YES",
+            "Correct",
             button_color=btn_color2,
             size=btn_size,
             font=btn_font,
@@ -88,7 +87,7 @@ col = [
             disabled=True,
         ),
         g.Button(
-            "NO",
+            "Wrong",
             button_color=btn_color3,
             size=btn_size,
             font=btn_font,
@@ -112,10 +111,13 @@ window = g.Window(
 
 cap = cv2.VideoCapture(0)
 
-image_counter = 0
-
-with open("C:\\image_counter.txt", "r") as f:
+with open(image_counter_path, "r") as f:
     image_counter = int(f.readline())
+
+if image_counter == 0:
+    df_results = pd.DataFrame(columns=["Image", "Prediction", "Confidence", "Correct"])
+else:
+    df_results = pd.read_csv(f"{result_path}\\df.csv")
 
 while True:
     event, values = window.read(timeout=30)
@@ -144,15 +146,12 @@ while True:
         window["yes"].update(disabled=True)
         window["no"].update(disabled=True)
         window["text"].update("Prediction:")
-        df_results = df_results.append(
-            {
-                "Image": f"{image_counter}.png",
-                "Prediction": prediction_values[0],
-                "Confidence": prediction_values[1],
-                "Correct": 1,
-            },
-            ignore_index=True,
-        )
+        df_results.loc[len(df_results)] = [
+            f"{image_counter}.png",
+            prediction_values[0],
+            prediction_values[1],
+            1,
+        ]
         image_counter += 1
 
     if event == "no":
@@ -160,15 +159,12 @@ while True:
         window["yes"].update(disabled=True)
         window["no"].update(disabled=True)
         window["text"].update("Prediction:")
-        df_results = df_results.append(
-            {
-                "Image": f"{image_counter}.png",
-                "Prediction": prediction_values[0],
-                "Confidence": prediction_values[1],
-                "Correct": 1,
-            },
-            ignore_index=True,
-        )
+        df_results.loc[len(df_results)] = [
+            f"{image_counter}.png",
+            prediction_values[0],
+            prediction_values[1],
+            0,
+        ]
         image_counter += 1
 
 with open("C:\\image_counter.txt", "w") as f:
