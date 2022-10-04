@@ -104,9 +104,7 @@ layout = [
 
 
 window = g.Window(
-    "Hand Recognition Demo",
-    layout,
-    keep_on_top=True,
+    "Hand Recognition Demo", layout, keep_on_top=True, enable_close_attempted_event=True
 )
 
 cap = cv2.VideoCapture(0)
@@ -118,6 +116,9 @@ if image_counter == 0:
     df_results = pd.DataFrame(columns=["Image", "Prediction", "Confidence", "Correct"])
 else:
     df_results = pd.read_csv(f"{result_path}\\df.csv")
+
+
+can_close = True
 
 while True:
     event, values = window.read(timeout=30)
@@ -138,8 +139,10 @@ while True:
         prediction_values = GetPrediction(model, frame)
         cv2.imwrite(f"{img_path}\\{image_counter}.png", frame)
         window["text"].update(
-            f"Prediction: {TranslatePrediction(prediction_values[0])} with confidence {round(prediction_values[1],2)}%."
+            f"Prediction: {TranslatePrediction(prediction_values[0])} with confidence "
+            "%.2f" % round(prediction_values[1], 2)
         )
+        can_close = False
 
     if event == "yes":
         window["detect"].update(disabled=False)
@@ -153,6 +156,7 @@ while True:
             1
         ]
         image_counter += 1
+        can_close = True
 
     if event == "no":
         window["detect"].update(disabled=False)
@@ -166,11 +170,11 @@ while True:
             0
         ]
         image_counter += 1
+        can_close = True
 
-with open("C:\\image_counter.txt", "w") as f:
-    f.write(str(image_counter))
-
-df_results.to_csv(f"{result_path}\\df.csv")
-
-cap.release()
-window.close()
+    if event == g.WINDOW_CLOSE_ATTEMPTED_EVENT and can_close:
+        with open("C:\\image_counter.txt", "w") as f:
+            f.write(str(image_counter))
+        df_results.to_csv(f"{result_path}\\df.csv")
+        cap.release()
+        window.close()
