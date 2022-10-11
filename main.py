@@ -8,14 +8,12 @@ import numpy as np
 import tensorflow as tf
 from PIL import ImageTk
 from PIL import Image
+import uuid
 
 
 model = tf.keras.models.load_model("C:\\model")
 
 img_path = "C:\\pictures"
-result_path = "C:\\test_results"
-image_counter_path = "C:\\image_counter.txt"
-
 
 def GetPrediction(model, img, img_width=64, img_height=64):
     img = cv2.resize(img, (img_width, img_height))
@@ -109,15 +107,6 @@ window = g.Window(
 
 cap = cv2.VideoCapture(0)
 
-with open(image_counter_path, "r") as f:
-    image_counter = int(f.readline())
-
-if image_counter == 0:
-    df_results = pd.DataFrame(columns=["Image", "Prediction", "Confidence", "Correct"])
-else:
-    df_results = pd.read_csv(f"{result_path}\\df.csv")
-
-
 can_close = True
 
 while True:
@@ -137,7 +126,9 @@ while True:
         window["yes"].update(disabled=False)
         window["no"].update(disabled=False)
         prediction_values = GetPrediction(model, frame)
-        cv2.imwrite(f"{img_path}\\{image_counter}.png", frame)
+        random_string = str(uuid.uuid4())
+        outfile = '%s/%s.png' % ("C:\\pictures", random_string)
+        cv2.imwrite(outfile, frame)
         window["text"].update(
             f"Prediction: {TranslatePrediction(prediction_values[0])} with confidence "
             "%.2f" % round(prediction_values[1], 2)
@@ -149,13 +140,8 @@ while True:
         window["yes"].update(disabled=True)
         window["no"].update(disabled=True)
         window["text"].update("Prediction:")
-        df_results.loc[len(df_results)] = [
-            f"{image_counter}.png",
-            prediction_values[0],
-            prediction_values[1],
-            1
-        ]
-        image_counter += 1
+        with open("C:\\test_results.txt", 'a') as file:
+            file.write(f"{random_string}.png,{TranslatePrediction(prediction_values[0])},{prediction_values[1]},1\n")
         can_close = True
 
     if event == "no":
@@ -163,18 +149,10 @@ while True:
         window["yes"].update(disabled=True)
         window["no"].update(disabled=True)
         window["text"].update("Prediction:")
-        df_results.loc[len(df_results)] = [
-            f"{image_counter}.png",
-            prediction_values[0],
-            prediction_values[1],
-            0
-        ]
-        image_counter += 1
+        with open("C:\\test_results.txt", 'a') as file:
+            file.write(f"{random_string}.png,{TranslatePrediction(prediction_values[0])},{prediction_values[1]},0\n")
         can_close = True
 
     if event == g.WINDOW_CLOSE_ATTEMPTED_EVENT and can_close:
-        with open("C:\\image_counter.txt", "w") as f:
-            f.write(str(image_counter))
-        df_results.to_csv(f"{result_path}\\df.csv")
         cap.release()
         window.close()
